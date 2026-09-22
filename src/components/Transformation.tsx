@@ -29,11 +29,11 @@ function BeforeIllustration() {
 
 function AfterIllustration() {
   return (
-    <svg viewBox="0 0 400 300" className="absolute inset-0 w-full h-full opacity-90" preserveAspectRatio="xMidYMax slice">
+    <svg viewBox="0 0 400 300" className="absolute inset-0 w-full h-full opacity-25" preserveAspectRatio="xMidYMid slice">
       <g stroke="#3a4a37" strokeWidth="1">
-        <line x1="0" y1="260" x2="400" y2="260" />
-        <line x1="0" y1="272" x2="400" y2="272" />
-        <line x1="0" y1="284" x2="400" y2="284" />
+        <line x1="0" y1="40" x2="400" y2="40" />
+        <line x1="0" y1="70" x2="400" y2="70" />
+        <line x1="0" y1="100" x2="400" y2="100" />
       </g>
     </svg>
   );
