@@ -2,6 +2,7 @@ import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { TrustStrip } from "./components/TrustStrip";
 import { Transformation } from "./components/Transformation";
+import { Cases } from "./components/Cases";
 import { Services } from "./components/Services";
 import { Flagship } from "./components/Flagship";
 import { Equipment } from "./components/Equipment";
@@ -20,6 +21,7 @@ export default function App() {
         <Hero />
         <TrustStrip />
         <Transformation />
+        <Cases />
         <Services />
         <Flagship />
         <Equipment />
