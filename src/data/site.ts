@@ -9,7 +9,7 @@ export const site = {
   region: "Львів та Львівська область",
   regionRadius: "до 100 км від Львова",
   legalNote: "ФОП, офіційно",
-  siteUrl: "https://pidgruntya.pages.dev",
+  siteUrl: "https://pidgruntya.pp.ua",
 };
 
 export const links = {
