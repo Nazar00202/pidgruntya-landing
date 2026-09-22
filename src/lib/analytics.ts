@@ -1,6 +1,5 @@
-// Мінімальна обгортка над GA4/Meta Pixel.
-// Нічого не робить, поки VITE_GA4_ID / VITE_META_PIXEL_ID не задані в .env —
-// safe no-op на етапі розробки, щоб не ловити помилки в консолі.
+// Обгортка над GA4 (через gtag.js, підключений в index.html) та Meta Pixel.
+// Безпечна навіть якщо жоден з них ще не підключений — просто нічого не робить.
 
 export type AnalyticsEvent =
   | "phone_click"
@@ -17,6 +16,7 @@ export type AnalyticsEvent =
 declare global {
   interface Window {
     dataLayer?: unknown[];
+    gtag?: (...args: unknown[]) => void;
     fbq?: (...args: unknown[]) => void;
   }
 }
@@ -24,8 +24,8 @@ declare global {
 export function track(event: AnalyticsEvent, params: Record<string, unknown> = {}): void {
   if (typeof window === "undefined") return;
 
-  if (window.dataLayer) {
-    window.dataLayer.push({ event, ...params });
+  if (window.gtag) {
+    window.gtag("event", event, params);
   }
   if (window.fbq) {
     window.fbq("trackCustom", event, params);
