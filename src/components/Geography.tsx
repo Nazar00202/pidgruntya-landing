@@ -34,7 +34,7 @@ export function Geography() {
         </div>
 
         <div>
-          <div className="font-display text-sm font-bold text-orange mb-3.5">05 — Географія</div>
+          <div className="font-display text-sm font-bold text-orange mb-3.5">06 — Географія</div>
           <h2 className="font-display font-extrabold text-[28px] sm:text-[34px] lg:text-[38px] leading-tight mb-5">
             Львів та Львівська область
           </h2>

@@ -6,12 +6,12 @@ export function Services() {
     <section className="py-24" id="services">
       <div className="max-w-[1180px] mx-auto px-6">
         <div className="max-w-[640px] mb-13">
-          <div className="font-display text-sm font-bold text-orange mb-3.5">02 — Послуги</div>
+          <div className="font-display text-sm font-bold text-orange mb-3.5">02 — Розчищення і вивіз</div>
           <h2 className="font-display font-extrabold text-[30px] sm:text-[38px] lg:text-[44px] leading-tight">
-            Що входить у роботу
+            Розчищення, демонтаж і вивіз сміття
           </h2>
           <p className="mt-4 text-paper-dim text-[16.5px] leading-relaxed">
-            Кожна послуга доступна окремо або як частина комплексної підготовки території.
+            Окремо або комплексом — від зарослої ділянки до готового майданчика під будівництво.
           </p>
         </div>
 

@@ -3,7 +3,7 @@ export function Transformation() {
     <section className="py-24 bg-surface" id="transform">
       <div className="max-w-[1180px] mx-auto px-6">
         <div className="max-w-[640px] mb-13">
-          <div className="font-display text-sm font-bold text-orange mb-3.5">01 — Результат</div>
+          <div className="font-display text-sm font-bold text-orange mb-3.5">03 — Результат</div>
           <h2 className="font-display font-extrabold text-[30px] sm:text-[38px] lg:text-[44px] leading-tight">
             Від захаращеної ділянки — до готового майданчика
           </h2>

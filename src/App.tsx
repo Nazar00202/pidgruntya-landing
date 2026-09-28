@@ -1,6 +1,7 @@
 import { Header } from "./components/Header";
 import { Hero } from "./components/Hero";
 import { TrustStrip } from "./components/TrustStrip";
+import { Delivery } from "./components/Delivery";
 import { Transformation } from "./components/Transformation";
 import { Cases } from "./components/Cases";
 import { Services } from "./components/Services";
@@ -20,9 +21,10 @@ export default function App() {
       <main id="top">
         <Hero />
         <TrustStrip />
+        <Delivery />
+        <Services />
         <Transformation />
         <Cases />
-        <Services />
         <Flagship />
         <Equipment />
         <Audience />

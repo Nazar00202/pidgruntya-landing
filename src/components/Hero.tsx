@@ -1,4 +1,5 @@
-import { site } from "../data/site";
+import { site, links } from "../data/site";
+import { track, preselectService } from "../lib/analytics";
 
 export function Hero() {
   return (
@@ -28,39 +29,47 @@ export function Hero() {
             {site.region} · {site.regionRadius}
           </div>
           <h1 className="font-display font-extrabold leading-[.98] tracking-tight text-[40px] sm:text-[56px] lg:text-[74px] max-w-[14ch]">
-            Розчищаємо та готуємо території під ключ
+            Доставка піску та щебеню КамАЗом
           </h1>
           <p className="mt-6 text-lg leading-relaxed text-paper-dim max-w-[46ch]">
-            Дерева, зарості, старі споруди, сміття та ґрунт — організовуємо демонтаж, прибирання,
-            вивіз і планування території. Один контакт — весь комплекс робіт.
+            Пісок, щебінь, відсів, ґрунт — привозимо власними самоскидами по Львову та області.
+            А також вивіз сміття, демонтаж і розчищення ділянок під ключ.
           </p>
           <div className="flex flex-wrap gap-3.5 mt-9">
             <a
               href="#lead-form"
+              onClick={() => preselectService("delivery")}
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 font-semibold text-[14.5px] rounded-sm bg-orange text-void hover:bg-[#ff7d1f] hover:-translate-y-px transition-all"
             >
-              Отримати прорахунок
+              Замовити доставку
             </a>
             <a
-              href="#lead-form"
+              href={links.tel}
+              onClick={() => track("phone_click", { location: "hero" })}
               className="inline-flex items-center justify-center gap-2 px-6 py-3.5 font-semibold text-[14.5px] rounded-sm border border-line hover:border-paper-dim transition-colors"
             >
-              Надіслати фото ділянки
+              Подзвонити {site.phoneDisplay}
+            </a>
+            <a
+              href="#services"
+              className="inline-flex items-center justify-center gap-2 px-6 py-3.5 font-semibold text-[14.5px] rounded-sm border border-line hover:border-paper-dim transition-colors"
+            >
+              Розчищення ділянки
             </a>
           </div>
         </div>
 
         <div>
           <div className="border-t md:border-t-0 md:border-l border-line pt-5 md:pt-0 md:pl-8">
-            <div className="text-[12.5px] text-paper-dim mb-2.5">Що входить</div>
+            <div className="text-[12.5px] text-paper-dim mb-2.5">Доставка КамАЗом</div>
             <div className="font-display font-bold text-2xl leading-tight">
-              Розчищення, демонтаж, корчування, вивіз, планування
+              Пісок, щебінь, відсів, ґрунт — по Львову та області
             </div>
           </div>
           <div className="border-t md:border-t-0 md:border-l border-line pt-5 md:pt-0 md:pl-8 mt-6">
-            <div className="text-[12.5px] text-paper-dim mb-2.5">Як рахуємо вартість</div>
+            <div className="text-[12.5px] text-paper-dim mb-2.5">Також робимо</div>
             <div className="font-display font-bold text-2xl leading-tight">
-              За фото та описом об'єкта — без універсального прайсу
+              Вивіз сміття, демонтаж, розчищення та планування ділянок
             </div>
           </div>
         </div>

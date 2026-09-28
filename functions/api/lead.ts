@@ -41,8 +41,20 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   const phone = String(formData.get("phone") ?? "").slice(0, 60);
   const city = String(formData.get("city") ?? "").slice(0, 200);
   const desc = String(formData.get("desc") ?? "").slice(0, 2000);
+  const service = String(formData.get("service") ?? "").slice(0, 60);
+  const material = String(formData.get("material") ?? "").slice(0, 100);
+  const volume = String(formData.get("volume") ?? "").slice(0, 100);
 
-  if (!name || !phone || !city || !desc) {
+  const serviceLabels: Record<string, string> = {
+    delivery: "🚚 Доставка матеріалів",
+    removal: "Вивіз сміття / ґрунту",
+    clearing: "Розчищення ділянки",
+    demolition: "Демонтаж",
+    other: "Інше",
+  };
+
+  // Для доставки опис не обов'язковий, для решти послуг — обов'язковий
+  if (!name || !phone || !city || (service !== "delivery" && !desc)) {
     return new Response(JSON.stringify({ error: "Missing required fields" }), {
       status: 400,
       headers: { "Content-Type": "application/json" },
@@ -53,9 +65,14 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     "🆕 Нова заявка з сайту",
     `Ім'я: ${name}`,
     `Телефон: ${phone}`,
-    `Населений пункт: ${city}`,
-    `Задача: ${desc}`,
-  ].join("\n");
+    `Адреса: ${city}`,
+    `Послуга: ${serviceLabels[service] ?? (service || "не вказано")}`,
+    service === "delivery" ? `Матеріал: ${material || "—"}` : "",
+    service === "delivery" ? `Обсяг: ${volume || "—"}` : "",
+    desc ? `Коментар: ${desc}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 
   const tgApi = `https://api.telegram.org/bot${env.TELEGRAM_BOT_TOKEN}`;
 

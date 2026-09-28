@@ -30,7 +30,7 @@ export function Audience() {
     <section className="pb-24" id="audience">
       <div className="max-w-[1180px] mx-auto px-6">
         <div className="max-w-[640px] mb-13">
-          <div className="font-display text-sm font-bold text-orange mb-3.5">04 — Для кого</div>
+          <div className="font-display text-sm font-bold text-orange mb-3.5">05 — Для кого</div>
           <h2 className="font-display font-extrabold text-[30px] sm:text-[38px] lg:text-[44px] leading-tight">
             Працюємо з приватними та комерційними об'єктами
           </h2>

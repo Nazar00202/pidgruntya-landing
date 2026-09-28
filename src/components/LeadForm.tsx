@@ -1,13 +1,33 @@
-import { useState, type FormEvent, type InputHTMLAttributes } from "react";
+import { useEffect, useRef, useState, type FormEvent, type InputHTMLAttributes } from "react";
 import { Phone, Send, MessageCircle } from "lucide-react";
 import { site, links } from "../data/site";
-import { track } from "../lib/analytics";
+import { track, type ServiceKey } from "../lib/analytics";
+import { materials } from "../data/materials";
+
+const serviceOptions: { value: ServiceKey; label: string }[] = [
+  { value: "delivery", label: "Доставка піску / щебеню / ґрунту" },
+  { value: "removal", label: "Вивіз сміття чи ґрунту" },
+  { value: "clearing", label: "Розчищення ділянки" },
+  { value: "demolition", label: "Демонтаж будівлі" },
+  { value: "other", label: "Інше" },
+];
 
 type Status = "idle" | "sending" | "sent" | "error";
 
 export function LeadForm() {
   const [status, setStatus] = useState<Status>("idle");
   const [fileCount, setFileCount] = useState(0);
+  const [service, setService] = useState<ServiceKey>("delivery");
+  const formStarted = useRef(false);
+
+  // Кнопки «Замовити доставку» тощо по сторінці передвибирають послугу у формі
+  useEffect(() => {
+    const onPreselect = (e: Event) => setService((e as CustomEvent<ServiceKey>).detail);
+    window.addEventListener("lead:service", onPreselect);
+    return () => window.removeEventListener("lead:service", onPreselect);
+  }, []);
+
+  const isDelivery = service === "delivery";
 
   async function handleSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault();
@@ -15,7 +35,7 @@ export function LeadForm() {
     const formData = new FormData(form);
 
     setStatus("sending");
-    track("form_submit");
+    track("form_submit", { service });
 
     try {
       const res = await fetch("/api/lead", {
@@ -24,8 +44,10 @@ export function LeadForm() {
       });
       if (!res.ok) throw new Error("Request failed");
       setStatus("sent");
-      track("quote_request");
+      // ГОЛОВНА КОНВЕРСІЯ — рахується тільки після реального успішного надсилання
+      track("generate_lead", { service });
       form.reset();
+      setService("delivery");
       setFileCount(0);
     } catch {
       // /api/lead ще не задеплоєно (наприклад, локальна розробка без wrangler) —
@@ -39,11 +61,11 @@ export function LeadForm() {
       <div className="max-w-[1180px] mx-auto px-6 grid lg:grid-cols-[.95fr_1.05fr] gap-16">
         <div>
           <h2 className="font-display font-extrabold text-[30px] sm:text-[38px] lg:text-[42px] leading-tight mb-5">
-            Отримати попередній прорахунок
+            Залишити заявку
           </h2>
           <p className="text-paper-dim text-base leading-relaxed mb-7">
-            Надішліть 3–5 фото території, адресу та коротко опишіть задачу — визначимо, які роботи
-            та техніка потрібні для вашого об'єкта.
+            Для доставки — вкажіть матеріал, обсяг і адресу. Для розчищення чи демонтажу — додайте
+            3–5 фото ділянки. Передзвонимо і назвемо ціну.
           </p>
 
           <div className="flex flex-col gap-3.5">
@@ -80,29 +102,75 @@ export function LeadForm() {
 
         <form
           onSubmit={handleSubmit}
-          onFocus={() => track("form_start")}
+          onFocus={() => {
+            if (formStarted.current) return;
+            formStarted.current = true;
+            track("form_start");
+          }}
           className="border border-line p-7 sm:p-9 bg-surface"
         >
           <Field label="Ваше ім'я" name="name" type="text" required placeholder="Ім'я" />
           <Field label="Телефон" name="phone" type="tel" required placeholder="+380" />
-          <Field label="Населений пункт" name="city" type="text" required placeholder="Львів, Брюховичі, ..." />
+          <Field label="Адреса / населений пункт" name="city" type="text" required placeholder="Львів, Брюховичі, ..." />
+
+          <div className="mb-4.5">
+            <label htmlFor="f-service" className="block text-[13px] text-paper-dim mb-2">
+              Послуга
+            </label>
+            <select
+              id="f-service"
+              name="service"
+              value={service}
+              onChange={(e) => setService(e.target.value as ServiceKey)}
+              className="w-full bg-void border border-line text-paper px-3.5 py-3 text-[15px] rounded-sm focus:outline-2 focus:outline-orange"
+            >
+              {serviceOptions.map((o) => (
+                <option key={o.value} value={o.value}>
+                  {o.label}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {isDelivery && (
+            <div className="grid sm:grid-cols-2 gap-x-4">
+              <div className="mb-4.5">
+                <label htmlFor="f-material" className="block text-[13px] text-paper-dim mb-2">
+                  Матеріал
+                </label>
+                <select
+                  id="f-material"
+                  name="material"
+                  className="w-full bg-void border border-line text-paper px-3.5 py-3 text-[15px] rounded-sm focus:outline-2 focus:outline-orange"
+                >
+                  {materials.map((m) => (
+                    <option key={m.title} value={m.title}>
+                      {m.title}
+                    </option>
+                  ))}
+                </select>
+              </div>
+              <Field label="Обсяг (т, м³ або к-сть машин)" name="volume" type="text" placeholder="напр. 1 машина" />
+            </div>
+          )}
 
           <div className="mb-4.5">
             <label htmlFor="f-desc" className="block text-[13px] text-paper-dim mb-2">
-              Що потрібно зробити?
+              {isDelivery ? "Коментар (необов'язково)" : "Що потрібно зробити?"}
             </label>
             <textarea
               id="f-desc"
               name="desc"
-              required
-              placeholder="Коротко опишіть ділянку та задачу"
+              required={!isDelivery}
+              placeholder={isDelivery ? "Коли потрібно, особливості під'їзду тощо" : "Коротко опишіть ділянку та задачу"}
               className="w-full min-h-[90px] bg-void border border-line text-paper px-3.5 py-3 text-[15px] rounded-sm focus:outline-2 focus:outline-orange"
             />
           </div>
 
+          {!isDelivery && (
           <div className="mb-4.5">
             <label className="block text-[13px] text-paper-dim mb-2" htmlFor="f-photo">
-              Фото ділянки (3–5 фото)
+              Фото ділянки (3–5 фото, необов'язково)
             </label>
             <label
               htmlFor="f-photo"
@@ -123,6 +191,7 @@ export function LeadForm() {
               }}
             />
           </div>
+          )}
 
           <button
             type="submit"
@@ -139,8 +208,8 @@ export function LeadForm() {
           )}
           {status === "error" && (
             <p className="text-[13.5px] text-paper-dim mt-3.5 text-center">
-              Форма поки не підключена до сервера. Зателефонуйте або напишіть у Telegram/Viber
-              вище — це працює вже зараз.
+              Не вдалося надіслати заявку. Зателефонуйте {site.phoneDisplay} або напишіть у
+              Telegram/Viber — відповімо швидко.
             </p>
           )}
         </form>

@@ -9,7 +9,7 @@ export function FAQ() {
     <section className="py-24" id="faq">
       <div className="max-w-[1180px] mx-auto px-6">
         <div className="max-w-[640px] mb-13">
-          <div className="font-display text-sm font-bold text-orange mb-3.5">06 — Питання</div>
+          <div className="font-display text-sm font-bold text-orange mb-3.5">07 — Питання</div>
           <h2 className="font-display font-extrabold text-[30px] sm:text-[38px] lg:text-[44px] leading-tight">
             Часті запитання
           </h2>

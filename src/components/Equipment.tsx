@@ -12,7 +12,7 @@ export function Equipment() {
     <section className="py-24" id="equipment">
       <div className="max-w-[1180px] mx-auto px-6 grid lg:grid-cols-[1.1fr_.9fr] gap-14 items-center">
         <div>
-          <div className="font-display text-sm font-bold text-orange mb-3.5">03 — Організація</div>
+          <div className="font-display text-sm font-bold text-orange mb-3.5">04 — Організація</div>
           <h2 className="font-display font-extrabold text-[28px] sm:text-[34px] lg:text-[38px] leading-tight mb-5">
             Підбираємо техніку під конкретний об'єкт
           </h2>

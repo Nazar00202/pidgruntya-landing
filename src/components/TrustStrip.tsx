@@ -3,8 +3,8 @@ import { site } from "../data/site";
 const items = [
   { strong: `${site.region.split(" ")[0]} + ${site.regionRadius}`, text: "область охоплення" },
   { strong: site.legalNote, text: "працюємо як зареєстрований підприємець" },
-  { strong: "Своя техніка + партнери", text: "підбираємо склад під об'єкт" },
-  { strong: "Прорахунок за фото", text: "без зайвих виїздів наосліп" },
+  { strong: "Власні КамАЗи", text: "+ партнерська спецтехніка під об'єкт" },
+  { strong: "Ціна по телефону", text: "для доставки — одразу; для розчищення — за фото" },
 ];
 
 export function TrustStrip() {
