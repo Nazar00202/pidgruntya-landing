@@ -2,11 +2,7 @@
   "compilerOptions": {
     "target": "ES2020",
     "useDefineForClassFields": true,
-    "lib": [
-      "ES2020",
-      "DOM",
-      "DOM.Iterable"
-    ],
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
     "moduleResolution": "bundler",
@@ -21,15 +17,15 @@
     "noFallthroughCasesInSwitch": true,
     "tsBuildInfoFile": "./node_modules/.tmp/tsconfig.app.tsbuildinfo"
   },
-  "include": [
-    "src"
-  ],
-  "references": [
-    {
-      "path": "./tsconfig.node.json"
-    }
-  ],
+  "include": ["src"],
+  "references": [{ "path": "./tsconfig.node.json" }],
   "exclude": [
-    "src/legacy"
+    "src/legacy",
+    "src/components/Audience.tsx", "src/components/Cases.tsx", "src/components/Delivery.tsx",
+    "src/components/Equipment.tsx", "src/components/FAQ.tsx", "src/components/Flagship.tsx",
+    "src/components/Geography.tsx", "src/components/Hero.tsx", "src/components/Icon.tsx",
+    "src/components/Services.tsx", "src/components/Transformation.tsx",
+    "src/data/cases.ts", "src/data/materials.ts", "src/data/nav.ts", "src/data/services.ts",
+    "src/types.ts"
   ]
 }
