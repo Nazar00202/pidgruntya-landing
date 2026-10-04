@@ -24,3 +24,15 @@ export const cases: CaseItem[] = [
       "Прибрали зарості, гілки та мотлох навколо старої споруди, підготували територію до подальшого використання.",
   },
 ];
+
+export interface GalleryItem {
+  image: string;
+  caption: string;
+}
+
+export const gallery: GalleryItem[] = [
+  { image: "/images/cases/vyviz-smittia.jpg", caption: "Вивіз будівельного сміття КамАЗом" },
+  { image: "/images/cases/demontazh-zavalu.jpg", caption: "Розбирання та вивіз старої дерев'яної споруди" },
+  { image: "/images/cases/rozpyl-derev.jpg", caption: "Спилювання дерев і розпил на ділянці" },
+  { image: "/images/cases/vyviz-derevyny.jpg", caption: "Вивіз деревини та подрібнення гілок" },
+];
