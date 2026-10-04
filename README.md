@@ -1,122 +1,93 @@
-# ПІДҐРУНТЯ — Лендінг
+# ПІДҐРУНТЯ — сайт (pidgruntya.pp.ua)
 
-Сайт для сервісу розчищення, демонтажу та підготовки земельних ділянок під ключ (Львів та область).
+Доставка щебеню, піску, чорнозему КамАЗом + вивіз сміття, демонтаж, розчистка ділянок. Львів і область до 100 км.
 
-Стек: React + Vite + TypeScript + Tailwind CSS, форма заявки — через Cloudflare Pages Function.
+Стек: React + Vite + TypeScript + Tailwind. Хостинг — Cloudflare Pages. Кожна сторінка
+пререндериться в окремий HTML (швидко на телефоні + Google бачить текст і мета-теги).
 
-> **"ПІДҐРУНТЯ" — робоча назва**, придумана як заглушка. Замінити на реальну у `src/data/site.ts`, коли визначитесь.
+## Сторінки
 
----
+| Адреса | Для чого |
+|---|---|
+| `/` | Головна: щебінь і сипучі, калькулятор, комбо, знижки, фото, заявка |
+| `/shchebin` | Щебінь (під Google Ads «щебінь Львів») |
+| `/pisok-chornozem` | Пісок, чорнозем, ґрунт, відсів, бій цегли, каміння |
+| `/vyviz-smittia` | Вивіз будсміття |
+| `/demontazh` | Демонтаж гаражів, сараїв, будинків |
+| `/rozchystka-dilianky` | Розчистка: дерева, кущі, пні, планування, засипка |
 
-## 1. Запуск локально
+## Де що міняти (без правок верстки)
+
+| Що | Файл |
+|---|---|
+| **Ціни** (null → «Ціну уточнюйте за телефоном») | `src/config/prices.ts` |
+| Машина для калькулятора (т, м³ кузова), щільність матеріалів | `src/config/calculator.ts` |
+| Знижки | `src/config/discounts.ts` |
+| Фото до/після (файли в `public/photos`) | `src/config/photos.ts` |
+| Телефон, Telegram @username, назва | `src/data/site.ts` |
+| Тексти сторінок послуг, title/description для Google, FAQ | `src/data/pages.ts` |
+| Google Ads ID і мітки конверсій | `src/data/tracking.ts` |
+| Поля форми, варіанти «Звідки дізналися», структура заявки | `src/shared/lead.ts` |
+
+Список того, що треба уточнити в батька: [`docs/UTOCHNYTY.md`](docs/UTOCHNYTY.md).
+
+## Запуск локально
 
 ```bash
 npm install
-npm run dev
+npm run dev        # http://localhost:5173
+npm run build      # збірка в dist/ (webp → tsc → vite → пререндер → sitemap)
+npm run lint       # перевірка типів (сайт + функція)
 ```
 
-Відкриється на `http://localhost:5173`.
-
+Перевірити форму локально разом із функцією:
 ```bash
-npm run build     # продакшн-збірка в /dist
-npm run preview   # локальний перегляд збірки
+npm run build
+printf 'TELEGRAM_BOT_TOKEN=...\nTELEGRAM_CHAT_ID=...\n' > .dev.vars   # не комітиться
+npx wrangler pages dev dist
 ```
 
----
+## Як влаштовано
 
-## 2. Структура проєкту
+- **Роутинг**: список сторінок — `src/data/pages.ts`; `scripts/prerender.mjs` після збірки
+  створює `dist/index.html`, `dist/shchebin.html` … Cloudflare віддає `shchebin.html` за адресою
+  `/shchebin`, тому прямі посилання з реклами працюють. `public/_redirects` прибирає зайвий `/`
+  в кінці та старі варіанти адрес. Невідомі адреси → `404.html` зі статусом 404.
+- **Фото**: кладете `.jpg` у `public/photos`, при збірці `scripts/optimize-images.mjs` робить
+  webp 480/960/1600 px; компонент `<Picture>` сам обирає розмір, усе нижче першого екрана — lazy.
+- **Форма** → `POST /api/lead` (`functions/api/lead.ts`) → перевірка → повідомлення в Telegram
+  (+ фото, + посилання на карту). Якщо підключити KV-namespace з назвою `LEADS`, кожна заявка ще
+  зберігається як JSON — це база для майбутньої карти з пінами (послуга, населений пункт,
+  дедлайн, статус; координати `lat/lng` поки `null`).
+- **UTM**: `utm_*`, `gclid`, `fbclid` і сторінка входу запам'ятовуються на 30 днів і
+  додаються до заявки (`src/lib/utm.ts`).
+- **Аналітика** (`src/lib/analytics.ts`): gtag.js вантажиться після завантаження сторінки.
+  Події: `phone_click`, `viber_click`, `telegram_click` (автоматично для всіх посилань
+  tel:/viber:/t.me), `generate_lead` (успішна відправка форми), а також `form_start`,
+  `calculator_use`, `calculator_order`.
 
-```
-src/
-  components/     — секції сайту (Header, Hero, Services, LeadForm, ...)
-  data/           — контент: тексти послуг, FAQ, контакти (site.ts)
-  lib/analytics.ts — обгортка над GA4 / Meta Pixel
-functions/api/lead.ts — Cloudflare Pages Function, приймає форму і шле в Telegram
-public/images/    — сюди кладете реальні фото (папки hero, cases, services, equipment, before-after)
-```
+## Деплой
 
-**Де редагувати текст і контакти:**
-- Телефон, назва, географія — `src/data/site.ts`
-- Список послуг, кроки процесу, FAQ — `src/data/services.ts`
-- Заголовок і підзаголовок хіро — `src/components/Hero.tsx`
+1. Пуш у `main` → Cloudflare Pages збирає сам (Build command `npm run build`, output `dist`).
+2. **Змінні середовища** (Cloudflare → Workers & Pages → проєкт → Settings → Variables and Secrets,
+   для Production і Preview):
+   - `TELEGRAM_BOT_TOKEN` — тип **Secret**
+   - `TELEGRAM_CHAT_ID` — тип Secret або Text
+   - `VITE_GA4_ID` — необов'язково, за замовчуванням береться з `.env.production`
+   - `NODE_VERSION` = `20` (якщо білд скаржиться на версію Node)
+3. Після деплою: відкрити `/shchebin`, відправити тестову заявку, перевірити, що прийшла в Telegram.
 
-**Заміна ілюстрацій на реальні фото:**
-У `src/components/Transformation.tsx` є коментар `// ЗАМІНА НА РЕАЛЬНІ ФОТО` — там зараз векторні
-схеми замість фото "до/після". Коли з'являться реальні фото, покладіть їх у
-`public/images/before-after/` і замініть SVG-компоненти на звичайні `<img src="/images/before-after/....jpg" />`.
+## Telegram-бот (один раз)
 
----
+1. [@BotFather](https://t.me/BotFather) → `/newbot` → отримаєте токен → `TELEGRAM_BOT_TOKEN`.
+2. Напишіть своєму боту будь-що (або додайте його в групу, де сидите з батьком).
+3. Відкрийте `https://api.telegram.org/bot<ТОКЕН>/getUpdates` → `"chat":{"id": ...}` → `TELEGRAM_CHAT_ID`
+   (для групи id від'ємний, напр. `-100…`).
 
-## 3. Заливка на GitHub
+## GA4 / Google Ads
 
-```bash
-git init
-git add .
-git commit -m "Initial landing"
-git branch -M main
-git remote add origin https://github.com/<ваш-акаунт>/<назва-репо>.git
-git push -u origin main
-```
-
----
-
-## 4. Підключення Cloudflare Pages
-
-1. Зайдіть на [dash.cloudflare.com](https://dash.cloudflare.com) → **Workers & Pages** → **Create application** → **Pages** → **Connect to Git**.
-2. Виберіть свій GitHub-репозиторій.
-3. Налаштування збірки:
-   - **Framework preset:** Vite
-   - **Build command:** `npm run build`
-   - **Build output directory:** `dist`
-4. Натисніть **Save and Deploy**. Cloudflare Pages Free дає безкоштовний хостинг та білди.
-
-Сайт зʼявиться на `https://<назва-проєкту>.pages.dev`.
-
----
-
-## 5. Підключення власного домену
-
-1. У Cloudflare Pages проєкті → **Custom domains** → **Set up a custom domain**.
-2. Якщо домен вже на Cloudflare — прив'язка автоматична.
-3. Якщо домен в іншого реєстратора — додайте DNS-записи (CNAME на `<проєкт>.pages.dev`), які покаже Cloudflare.
-4. Для безкоштовного варіанту на старті можна зареєструвати домен у зоні `.pp.ua` через акредитованого реєстратора (перевірте актуальні умови на [pp.ua](https://pp.ua)) або просто користуватись `pages.dev`, поки немає стабільного потоку заявок.
-
----
-
-## 6. Environment variables (секрети)
-
-Форма заявки шле повідомлення в Telegram через `functions/api/lead.ts`. Потрібні дві змінні:
-
-1. Створіть Telegram-бота через [@BotFather](https://t.me/BotFather) → отримаєте `TELEGRAM_BOT_TOKEN`.
-2. Дізнайтесь свій `chat_id`: напишіть боту будь-що, потім відкрийте
-   `https://api.telegram.org/bot<TOKEN>/getUpdates` і знайдіть `"chat":{"id": ...}`.
-3. У Cloudflare Pages → ваш проєкт → **Settings** → **Environment variables** → додайте:
-   - `TELEGRAM_BOT_TOKEN`
-   - `TELEGRAM_CHAT_ID`
-4. Ці змінні доступні тільки у Pages Function (`functions/api/lead.ts`), у фронтенд-код вони не потрапляють.
-
-Локально для розробки скопіюйте `.env.example` → `.env` (Vite підхопить автоматично для `VITE_*` змінних; секрети Telegram для локальної роботи функції знадобляться через `wrangler pages dev` — див. [документацію Cloudflare Pages Functions](https://developers.cloudflare.com/pages/functions/)).
-
----
-
-## 7. Google Analytics 4 / Search Console / Ads
-
-1. **GA4:** створіть властивість на [analytics.google.com](https://analytics.google.com), отримайте `Measurement ID` (формат `G-XXXXXXX`), додайте в `.env` як `VITE_GA4_ID` і підключіть тег у `index.html` (за замовчуванням не підключено, щоб не зʼявлялись фейкові дані на етапі розробки).
-2. **Search Console:** [search.google.com/search-console](https://search.google.com/search-console) → додайте домен → підтвердіть через DNS-запис або HTML-файл → надішліть `sitemap.xml` (уже є в `public/`).
-3. **Google Ads:** налаштовується окремо в [ads.google.com](https://ads.google.com), конверсію повʼязати з подіями `quote_request` / `form_submit` з `src/lib/analytics.ts`.
-
----
-
-## 8. Оновлення сайту після запуску
-
-- Зміна тексту/цін/контактів → редагуйте файли в `src/data/`, закомітьте, запуште в `main` — Cloudflare Pages задеплоїть автоматично.
-- Додавання нового кейсу → додайте фото в `public/images/cases/`, розширте контент (наразі кейс-блок не винесений в окремий компонент — додасте, коли зʼявиться перший реальний кейс).
-- Заміна фото → просто кладете новий файл у відповідну папку `public/images/...` і оновлюєте шлях у коді.
-
----
-
-## 9. Що ще передбачено в архітектурі, але не в MVP
-
-- Окремі SEO-сторінки під кожну послугу (`/rozchystka-dilianky`, `/vyviz-gruntu` тощо) — додавати після перших рекламних даних, коли зрозуміло, які ключі конвертують.
-- CRM — на старті Google Sheets (колонки: дата, ім'я, телефон, послуга, адреса, фото, статус NEW → CONTACTED → PHOTO_RECEIVED → ESTIMATE → BOOKED → COMPLETED → LOST).
-- Meta Pixel, ретаргетинг — підключаються аналогічно GA4, через `.env` та `index.html`.
+1. GA4 → Адміністратор → Події → позначте як **ключові події**: `generate_lead`, `phone_click`,
+   `viber_click`, `telegram_click` (з'являться в списку після перших кліків).
+2. Google Ads → Цілі → Конверсії → Імпорт → Google Analytics 4 → виберіть ці ключові події
+   (або залиште прямі Ads-теги з `src/data/tracking.ts` — вони вже працюють; не рахуйте одну дію двічі).
+3. Search Console → додати домен → надіслати `https://pidgruntya.pp.ua/sitemap.xml`.

@@ -1,0 +1,21 @@
+# Cloudflare Pages: правила переадресації
+# ---------------------------------------------------------------
+# Кожна сторінка — окремий пререндерений HTML (dist/shchebin.html тощо),
+# тому прямі посилання /shchebin, /demontazh … відкриваються і без SPA-fallback,
+# і Google бачить готовий текст з правильними title/description.
+#
+# Тут — «страховка» для варіантів адрес, які можуть прийти з реклами чи соцмереж:
+/index.html                 /                     301
+/shchebin/                  /shchebin             301
+/pisok-chornozem/           /pisok-chornozem      301
+/vyviz-smittia/             /vyviz-smittia        301
+/demontazh/                 /demontazh            301
+/rozchystka-dilianky/       /rozchystka-dilianky  301
+/rozchystka                 /rozchystka-dilianky  301
+/pisok                      /pisok-chornozem      301
+/chornozem                  /pisok-chornozem      301
+
+# Усі інші невідомі адреси → public/404.html зі статусом 404 (правильно для SEO).
+# Якщо колись знадобиться класичний SPA-fallback (будь-яка адреса → головна),
+# розкоментуйте рядок нижче:
+# /*    /index.html   200

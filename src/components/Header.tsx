@@ -1,58 +1,66 @@
-import { useEffect, useState } from "react";
-import { Phone } from "lucide-react";
-import { navLinks } from "../data/nav";
+import { useState } from "react";
+import { Phone, Menu, X } from "lucide-react";
+import { servicePages } from "../data/pages";
 import { site, links } from "../data/site";
-import { track } from "../lib/analytics";
 
-export function Header() {
-  const [scrolled, setScrolled] = useState(false);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 12);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
+export function Header({ currentPath }: { currentPath: string }) {
+  const [open, setOpen] = useState(false);
 
   return (
     <header
-      className={`fixed top-0 left-0 right-0 z-50 transition-colors duration-200 backdrop-blur-md ${
-        scrolled ? "bg-void/95 border-b border-line" : "bg-void/70 border-b border-transparent"
-      }`}
+      className="fixed top-0 left-0 right-0 z-50 bg-void/95 border-b border-line"
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
+      data-track="header"
     >
-      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3 sm:gap-6">
-        <a href="#top" className="flex items-center gap-2 font-display font-extrabold text-xl whitespace-nowrap shrink-0">
-          <span className="w-[11px] h-[11px] bg-orange rotate-45 shrink-0" />
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+        <a href="/" className="flex items-center gap-2 font-display font-bold text-xl tracking-wide whitespace-nowrap shrink-0">
+          <span className="w-[11px] h-[11px] bg-orange rotate-45 shrink-0" aria-hidden />
           {site.brandName}
-          <span className="hidden sm:inline font-body font-medium text-[11px] text-paper-dim tracking-wide">/ Львів</span>
         </a>
 
-        <nav className="hidden md:flex gap-7 text-sm text-paper-dim">
-          {navLinks.map((l) => (
-            <a key={l.href} href={l.href} className="hover:text-paper transition-colors">
-              {l.label}
+        <nav className="hidden lg:flex gap-6 text-[14.5px] text-paper-dim" aria-label="Послуги">
+          {servicePages.map((p) => (
+            <a
+              key={p.path}
+              href={p.path}
+              className={`hover:text-paper transition-colors ${currentPath === p.path ? "text-paper" : ""}`}
+              aria-current={currentPath === p.path ? "page" : undefined}
+            >
+              {p.navLabel}
             </a>
           ))}
         </nav>
 
-        <div className="flex items-center gap-4">
-          <a
-            href={links.tel}
-            onClick={() => track("phone_click", { location: "header" })}
-            className="hidden sm:flex items-center gap-2 font-display font-bold text-lg whitespace-nowrap"
-          >
-            <Phone className="w-4 h-4 stroke-orange" strokeWidth={2} />
-            {site.phoneDisplay}
+        <div className="flex items-center gap-2 sm:gap-4">
+          <a href={links.tel} className="flex items-center gap-2 font-display font-semibold text-lg whitespace-nowrap">
+            <Phone className="w-4 h-4 text-orange" strokeWidth={2.2} aria-hidden />
+            <span className="hidden min-[400px]:inline">{site.phoneDisplay}</span>
+            <span className="min-[400px]:hidden">Дзвінок</span>
           </a>
-          <a
-            href="#lead-form"
-            className="inline-flex items-center justify-center gap-2 px-3.5 sm:px-5 py-3 font-semibold text-[13px] sm:text-sm rounded-sm bg-orange text-void hover:bg-[#ff7d1f] hover:-translate-y-px transition-all whitespace-nowrap"
+          <button
+            type="button"
+            className="lg:hidden p-2 -mr-2"
+            aria-label={open ? "Закрити меню" : "Відкрити меню"}
+            aria-expanded={open}
+            onClick={() => setOpen((v) => !v)}
           >
-            <span className="sm:hidden">Прорахунок</span>
-            <span className="hidden sm:inline">Отримати прорахунок</span>
-          </a>
+            {open ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
       </div>
+
+      {open && (
+        <nav className="lg:hidden border-t border-line bg-void px-4 pb-4" aria-label="Меню">
+          <a href="/" className="block py-3 border-b border-line text-[16px]">
+            Головна
+          </a>
+          {servicePages.map((p) => (
+            <a key={p.path} href={p.path} className="block py-3 border-b border-line text-[16px]">
+              {p.navLabel}
+            </a>
+          ))}
+        </nav>
+      )}
     </header>
   );
 }

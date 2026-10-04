@@ -15,8 +15,9 @@ export default {
         yellow: "#FFC400",
       },
       fontFamily: {
-        display: ["'Big Shoulders Display'", "sans-serif"],
-        body: ["Inter", "-apple-system", "sans-serif"],
+        // Oswald — має кирилицю (попередній Big Shoulders Display її не мав)
+        display: ["'Oswald Variable'", "'Arial Narrow'", "sans-serif"],
+        body: ["'Inter Variable'", "-apple-system", "'Segoe UI'", "Roboto", "sans-serif"],
       },
     },
   },
