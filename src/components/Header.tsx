@@ -20,11 +20,11 @@ export function Header() {
       }`}
       style={{ paddingTop: "env(safe-area-inset-top, 0px)" }}
     >
-      <div className="max-w-[1180px] mx-auto px-6 py-4 flex items-center justify-between gap-6">
-        <a href="#top" className="flex items-center gap-2 font-display font-extrabold text-xl">
+      <div className="max-w-[1180px] mx-auto px-4 sm:px-6 py-4 flex items-center justify-between gap-3 sm:gap-6">
+        <a href="#top" className="flex items-center gap-2 font-display font-extrabold text-xl whitespace-nowrap shrink-0">
           <span className="w-[11px] h-[11px] bg-orange rotate-45 shrink-0" />
           {site.brandName}
-          <span className="font-body font-medium text-[11px] text-paper-dim tracking-wide">/ Львів</span>
+          <span className="hidden sm:inline font-body font-medium text-[11px] text-paper-dim tracking-wide">/ Львів</span>
         </a>
 
         <nav className="hidden md:flex gap-7 text-sm text-paper-dim">
@@ -46,9 +46,10 @@ export function Header() {
           </a>
           <a
             href="#lead-form"
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 font-semibold text-sm rounded-sm bg-orange text-void hover:bg-[#ff7d1f] hover:-translate-y-px transition-all whitespace-nowrap"
+            className="inline-flex items-center justify-center gap-2 px-3.5 sm:px-5 py-3 font-semibold text-[13px] sm:text-sm rounded-sm bg-orange text-void hover:bg-[#ff7d1f] hover:-translate-y-px transition-all whitespace-nowrap"
           >
-            Отримати прорахунок
+            <span className="sm:hidden">Прорахунок</span>
+            <span className="hidden sm:inline">Отримати прорахунок</span>
           </a>
         </div>
       </div>

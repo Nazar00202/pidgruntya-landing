@@ -201,6 +201,14 @@ export function LeadForm() {
             {status === "sending" ? "Надсилаємо..." : "Надіслати заявку"}
           </button>
 
+          <p className="text-[12px] text-paper-dim mt-3 text-center">
+            Надсилаючи заявку, ви погоджуєтесь з{" "}
+            <a href="/privacy.html" className="underline hover:text-paper">
+              політикою конфіденційності
+            </a>
+            .
+          </p>
+
           {status === "sent" && (
             <p className="text-[13.5px] text-yellow mt-3.5 text-center">
               Заявку надіслано. Ми зв'яжемось найближчим часом.

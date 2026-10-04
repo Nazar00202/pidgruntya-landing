@@ -19,7 +19,7 @@ export function Cases() {
               <img
                 src={c.image}
                 alt={c.title}
-                className="w-full h-auto block border-b border-line"
+                className="w-full aspect-[2/1] object-cover block border-b border-line"
                 loading="lazy"
               />
               <div className="p-6">

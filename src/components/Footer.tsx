@@ -8,8 +8,8 @@ export function Footer() {
           <div>
             <h5 className="text-[13px] text-paper-dim font-semibold mb-4">{site.brandName}</h5>
             <p className="text-[14.5px] text-paper-dim leading-loose max-w-[38ch]">
-              Розчищення, демонтаж, вивіз та підготовка земельних ділянок під ключ у Львові та
-              області.
+              Доставка піску, щебеню, відсіву та ґрунту КамАЗом. Вивіз сміття, демонтаж і
+              розчищення ділянок у Львові та області.
             </p>
           </div>
           <div>
@@ -47,7 +47,7 @@ export function Footer() {
           <span>
             {site.brandName} · {site.legalNote}
           </span>
-          <span>Робоча назва — до затвердження</span>
+          <a href="/privacy.html" className="hover:text-paper">Політика конфіденційності</a>
         </div>
       </div>
     </footer>
