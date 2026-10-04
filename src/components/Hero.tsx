@@ -22,7 +22,7 @@ export function Hero() {
         }}
       />
 
-      <div className="relative z-10 max-w-[1180px] mx-auto px-6 grid md:grid-cols-[1.15fr_.85fr] gap-14 items-end">
+      <div className="relative z-10 max-w-[1180px] mx-auto px-6 grid md:grid-cols-[1.05fr_.95fr] gap-10 md:gap-14 items-center">
         <div>
           <div className="flex items-center gap-2.5 text-[13px] text-paper-dim font-medium mb-5">
             <span className="w-1.5 h-1.5 bg-yellow rounded-full shrink-0" />
@@ -59,17 +59,16 @@ export function Hero() {
           </div>
         </div>
 
-        <div>
-          <div className="border-t md:border-t-0 md:border-l border-line pt-5 md:pt-0 md:pl-8">
-            <div className="text-[12.5px] text-paper-dim mb-2.5">Доставка КамАЗом</div>
-            <div className="font-display font-bold text-2xl leading-tight">
-              Пісок, щебінь, відсів, ґрунт — по Львову та області
-            </div>
-          </div>
-          <div className="border-t md:border-t-0 md:border-l border-line pt-5 md:pt-0 md:pl-8 mt-6">
-            <div className="text-[12.5px] text-paper-dim mb-2.5">Також робимо</div>
-            <div className="font-display font-bold text-2xl leading-tight">
-              Вивіз сміття, демонтаж, розчищення та планування ділянок
+        <div className="relative">
+          <img
+            src="/images/hero/kamaz-jcb.jpg"
+            alt="Наш КамАЗ і екскаватор JCB на об'єкті у Львівській області"
+            className="w-full aspect-[4/3] object-cover border border-line"
+          />
+          <div className="absolute left-0 bottom-0 m-3 sm:m-4 bg-void/85 backdrop-blur-sm border border-line px-4 py-3">
+            <div className="text-[12px] text-paper-dim">Доставка КамАЗом 10–20 т</div>
+            <div className="font-display font-bold text-lg sm:text-xl leading-tight">
+              від 3 500 грн за машину
             </div>
           </div>
         </div>

@@ -4,7 +4,7 @@ const items = [
   { strong: `${site.region.split(" ")[0]} + ${site.regionRadius}`, text: "область охоплення" },
   { strong: site.legalNote, text: "працюємо як зареєстрований підприємець" },
   { strong: "Власні КамАЗи", text: "+ партнерська спецтехніка під об'єкт" },
-  { strong: "Ціна по телефону", text: "для доставки — одразу; для розчищення — за фото" },
+  { strong: "Від 3 500 грн / машина", text: "доставка 10–20 т; розчищення — ціна за фото" },
 ];
 
 export function TrustStrip() {

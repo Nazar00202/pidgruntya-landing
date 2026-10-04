@@ -1,4 +1,4 @@
-import { cases } from "../data/cases";
+import { cases, gallery } from "../data/cases";
 
 export function Cases() {
   return (
@@ -27,6 +27,16 @@ export function Cases() {
                 <p className="text-[14px] text-paper-dim leading-relaxed">{c.description}</p>
               </div>
             </div>
+          ))}
+        </div>
+
+        <h3 className="font-display font-bold text-xl mt-16 mb-6">Фото з наших об'єктів</h3>
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          {gallery.map((g) => (
+            <figure key={g.image} className="border border-line bg-surface">
+              <img src={g.image} alt={g.caption} className="w-full aspect-[4/3] object-cover block" loading="lazy" />
+              <figcaption className="px-4 py-3 text-[13.5px] text-paper-dim">{g.caption}</figcaption>
+            </figure>
           ))}
         </div>
       </div>
